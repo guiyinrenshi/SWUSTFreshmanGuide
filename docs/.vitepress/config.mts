@@ -39,7 +39,6 @@ export default defineConfig({
         text: '资源',
         items: [
           { text: 'GitHub 仓库', link: 'https://github.com/guiyinrenshi/SWUSTFreshmanGuide' },
-          { text: 'MrDoc 镜像', link: 'https://www.gyrs.xyz' },
           { text: '提 Issue', link: 'https://github.com/guiyinrenshi/SWUSTFreshmanGuide/issues' },
         ],
       },
