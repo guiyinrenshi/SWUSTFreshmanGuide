@@ -1,5 +1,5 @@
 import { defineConfig } from 'vitepress'
-import { pagefindPlugin } from 'vitepress-plugin-pagefind'
+import { buildSearchIndex } from './search-index'
 
 // 站点配置 — 西南科大新生指南
 // 原始 markdown 全部保留在 docs/ 子目录下，未做任何重命名或移动
@@ -14,16 +14,9 @@ export default defineConfig({
   // GitHub 直接浏览这些页面本来就看不到图。忽略死链/死图,不阻断 build。
   ignoreDeadLinks: true,
 
-  // Pagefind 离线全文搜索(替代内置 minisearch,中文搜索更好用)
+  // 自定义 Fuse.js 搜索: build 时生成 search-index.json
   vite: {
-    plugins: [
-      pagefindPlugin({
-        btnPlaceholder: '搜索',
-        placeholder: '搜索指南内容',
-        emptyText: '空空如也，换个关键词试试',
-        heading: '共 {{searchResult}} 条结果',
-      }),
-    ],
+    plugins: [buildSearchIndex()],
   },
 
   // GitHub Pages 部署配置
