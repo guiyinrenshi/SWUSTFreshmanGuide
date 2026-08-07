@@ -132,6 +132,10 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
+.fuse-search {
+  margin-left: 16px;
+}
+
 .fuse-search-btn {
   display: flex;
   align-items: center;
