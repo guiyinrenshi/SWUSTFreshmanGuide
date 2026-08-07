@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitepress'
+import { pagefindPlugin } from 'vitepress-plugin-pagefind'
 
 // 站点配置 — 西南科大新生指南
 // 原始 markdown 全部保留在 docs/ 子目录下，未做任何重命名或移动
@@ -12,6 +13,18 @@ export default defineConfig({
   // 原仓库历史里有部分图片相对路径写错(图片其实在 照片/ 子目录但 md 引用的是 ./xxx),
   // GitHub 直接浏览这些页面本来就看不到图。忽略死链/死图,不阻断 build。
   ignoreDeadLinks: true,
+
+  // Pagefind 离线全文搜索(替代内置 minisearch,中文搜索更好用)
+  vite: {
+    plugins: [
+      pagefindPlugin({
+        btnPlaceholder: '搜索',
+        placeholder: '搜索指南内容',
+        emptyText: '空空如也，换个关键词试试',
+        heading: '共 {{searchResult}} 条结果',
+      }),
+    ],
+  },
 
   // GitHub Pages 部署配置
   // 用户名 guiyinrenshi, 仓库 SWUSTFreshmanGuide, 站点访问地址:
@@ -156,21 +169,6 @@ export default defineConfig({
     darkModeSwitchTitle: '切换到深色主题',
     sidebarMenuLabel: '侧边栏',
     returnToTopLabel: '回到顶部',
-
-    // 站内搜索 — 内置 minisearch,中文支持依赖分词
-    search: {
-      provider: 'local',
-      options: {
-        miniSearch: {
-          searchOptions: {
-            // 中文不分词也行,反正搜不到时会显示 "没有结果"
-            boost: { title: 4, text: 1 },
-            fuzzy: 0.2,
-            prefix: true,
-          },
-        },
-      },
-    },
 
     footer: {
       message: '基于 CC BY-NC-SA 4.0 协议发布 · 笔者归隐人士',
