@@ -12,9 +12,6 @@ hero:
     - theme: alt
       text: GitHub 仓库
       link: https://github.com/guiyinrenshi/SWUSTFreshmanGuide
-    - theme: alt
-      text: MrDoc 国内镜像
-      link: https://<site-domain>
 
 features:
   - icon: 🧭
@@ -58,5 +55,3 @@ features:
 
 著作权归作者所有。商业转载请联系作者获得授权,非商业转载请注明出处。
 本文为归隐人士原创,依据 **CC BY-NC-SA 4.0** 许可证进行授权,转载请附上出处链接及本声明。
-
-> 本站为社区维护版本,如需国内镜像可访问 [MrDoc 镜像](https://<site-domain>)。
