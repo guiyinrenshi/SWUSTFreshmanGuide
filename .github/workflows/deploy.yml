@@ -33,14 +33,14 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
-      - run: npx vitepress build
+      - run: npx vitepress build docs
         env:
           # 自定义 base 时需要;这里保持默认 /SWUSTFreshmanGuide/
           NODE_OPTIONS: --max-old-space-size=4096
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: .vitepress/dist
+          path: docs/.vitepress/dist
 
   deploy:
     name: Deploy
