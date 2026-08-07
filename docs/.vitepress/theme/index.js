@@ -7,7 +7,8 @@ export default {
   extends: DefaultTheme,
   Layout() {
     return h(DefaultTheme.Layout, null, {
-      'nav-bar-content-after': () => h(FuseSearch),
+      // 放回 VitePress 默认搜索框的位置(导航链接后、主题切换前)
+      'nav-bar-content-before': () => h(FuseSearch),
     })
   },
 }
