@@ -38,7 +38,6 @@ export default defineConfig({
         items: [
           { text: '西南科大新生指南', link: '/西南科大新生指南/前言' },
           { text: '西山校区生活', link: '/西山校区生活指南/住在西山' },
-          { text: '青义校区生活', link: '/青义校区生活指南/食在青义' },
         ],
       },
       {
@@ -110,6 +109,7 @@ export default defineConfig({
           collapsed: true,
           items: [
             { text: '学校群聊 / QQ / 公众号 / 网站推荐', link: '/西南科大新生指南/学校群聊、QQ、微信公众号、网站推荐' },
+            { text: 'Minecraft 星空社', link: '/西南科大新生指南/学校群聊、QQ、微信公众号、网站推荐/Minecraft星空社' },
           ],
         },
         {
@@ -132,17 +132,6 @@ export default defineConfig({
             { text: '行在西山', link: '/西山校区生活指南/行在西山' },
             { text: '学在西山', link: '/西山校区生活指南/学在西山' },
             { text: '外卖和快递', link: '/西山校区生活指南/西山校区的外卖和快递' },
-          ],
-        },
-      ],
-
-      '/青义校区生活指南/': [
-        {
-          text: '青义校区生活',
-          collapsed: false,
-          items: [
-            { text: '食在青义', link: '/青义校区生活指南/食在青义' },
-            { text: '老区寝室讲解', link: '/青义校区生活指南/老区生活指南/寝室讲解' },
           ],
         },
       ],
