@@ -7,8 +7,11 @@ hero:
   tagline: 本指南为学校新生手册的补充和完善,以社区力量共同维护。
   actions:
     - theme: brand
-      text: 开始阅读
+      text: 西南科大新生指南
       link: /西南科大新生指南/前言
+    - theme: alt
+      text: 西山校区生活指南
+      link: /西山校区生活指南/住在西山
     - theme: alt
       text: GitHub 仓库
       link: https://github.com/guiyinrenshi/SWUSTFreshmanGuide
