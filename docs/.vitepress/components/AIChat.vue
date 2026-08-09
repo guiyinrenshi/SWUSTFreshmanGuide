@@ -482,4 +482,19 @@ function renderMarkdown(text) {
   background: var(--vp-c-text-3);
   cursor: not-allowed;
 }
+
+@media (max-width: 767px) {
+  .ai-chat-fab {
+    display: none;
+  }
+  .ai-chat-overlay {
+    align-items: stretch;
+    padding: 0;
+  }
+  .ai-chat-dialog {
+    max-width: none;
+    height: 100dvh;
+    border-radius: 0;
+  }
+}
 </style>

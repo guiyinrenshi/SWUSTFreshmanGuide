@@ -305,4 +305,32 @@ onBeforeUnmount(() => {
   background: var(--vp-c-bg-soft);
   margin: 0 2px;
 }
+
+@media (max-width: 960px) {
+  .fuse-search {
+    margin-left: 8px;
+  }
+  .fuse-search-btn {
+    width: 36px;
+    height: 36px;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+  .fuse-search-btn-text,
+  .fuse-search-btn-kbd {
+    display: none;
+  }
+  .fuse-search-overlay {
+    padding: max(16px, env(safe-area-inset-top)) 12px 12px;
+  }
+  .fuse-search-dialog {
+    width: 100%;
+    max-height: calc(100dvh - 32px);
+  }
+  .fuse-search-footer {
+    display: none;
+  }
+}
 </style>

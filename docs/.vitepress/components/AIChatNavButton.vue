@@ -54,7 +54,7 @@ function openChat() {
     color: var(--vp-c-text-1);
   }
   .ai-chat-nav-btn-label {
-    display: none;
+    display: inline;
   }
 }
 </style>

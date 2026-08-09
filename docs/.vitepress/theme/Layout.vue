@@ -41,44 +41,26 @@ import AIChatNavButton from '../components/AIChatNavButton.vue'
     overflow: hidden !important;
     min-width: 0 !important;
   }
+
+  /* AI 入口放进汉堡菜单，避免再挤占移动端顶栏。 */
+  .VPNavBar .ai-chat-nav-btn {
+    display: none !important;
+  }
+  .VPNavScreen .ai-chat-nav-btn {
+    display: inline-flex;
+  }
 }
 
-/* ========== Hero 按钮: 移动端两列网格 + 超小屏全宽 ========== */
-@media (max-width: 640px) {
+/* Hero 入口在常见手机宽度下保持两列等宽。 */
+@media (min-width: 361px) and (max-width: 640px) {
   .VPHero .actions {
-    flex-direction: row !important;
-    flex-wrap: wrap !important;
-    gap: 12px !important;
-    justify-content: center !important;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
   }
+  .VPHero .actions .action,
   .VPHero .actions .VPButton {
-    width: calc(50% - 6px) !important;
-    min-width: 140px !important;
-    margin: 0 !important;
-  }
-  .VPHero .actions .VPButton:last-child:nth-child(odd) {
-    width: 100% !important;
-  }
-}
-@media (max-width: 480px) {
-  .VPHero .actions .VPButton {
-    width: 100% !important;
-    min-width: 0 !important;
-  }
-}
-
-/* ========== Feature 卡片: 填满宽度 ========== */
-@media (max-width: 640px) {
-  .VPFeatures .VPFeature {
-    max-width: 100% !important;
-    width: 100% !important;
-    margin: 0 0 16px 0 !important;
-  }
-  .VPFeatures .container {
-    padding: 0 16px !important;
-  }
-  .VPFeatures .VPFeature .box {
-    padding: 16px !important;
+    width: 100%;
   }
 }
 </style>
