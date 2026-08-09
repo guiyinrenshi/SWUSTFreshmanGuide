@@ -23,17 +23,25 @@ import AIChatNavButton from '../components/AIChatNavButton.vue'
 </script>
 
 <style>
-/* ========== 导航栏: AI 按钮排在 github 前 ========== */
 @media (min-width: 961px) {
   .VPNavBar .content-body {
     flex-wrap: nowrap !important;
+    gap: 12px !important;
   }
   .VPNavBar .social-links {
-    order: 10 !important;
+    padding-inline: 8px !important;
+    gap: 8px !important;
   }
   .ai-chat-nav-btn {
-    order: 9 !important;
-    margin-right: 8px;
+    margin-left: auto !important;
+    padding: 6px 16px !important;
+    min-height: 32px !important;
+    font-size: 13px !important;
+  }
+  .VPNavBar .social-links > a {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 8px !important;
   }
 }
 @media (max-width: 960px) {
