@@ -64,15 +64,25 @@ const results = ref([])
 const sel = ref(0)
 const input = ref(null)
 let fuse = null
+let fuseWord = null
+let allDocs = []
 
 async function loadIndex() {
   try {
     const resp = await fetch('/search-index.json')
     const pages = await resp.json()
+    allDocs = pages
     fuse = new Fuse(pages, {
       keys: ['title', 'content'],
       includeScore: true,
       threshold: 0.4,
+      ignoreLocation: true,
+      minMatchCharLength: 1,
+    })
+    fuseWord = new Fuse(pages, {
+      keys: ['title', 'content'],
+      includeScore: true,
+      threshold: 0.8,
       ignoreLocation: true,
       minMatchCharLength: 1,
     })
@@ -98,7 +108,40 @@ function doSearch() {
     results.value = []
     return
   }
-  results.value = fuse.search(query.value.trim()).slice(0, 12).map(r => r.item)
+  // Fuse.js 对中文标点敏感(? 等会破坏匹配),先清洗标点再检索
+  const q = query.value
+    .replace(/[？?！!。，,、；;：:（）()【】\[\]"'"'"'《》<>]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+  if (!q) {
+    results.value = []
+    return
+  }
+  // 整句检索, 0 命中时拆词聚合(复用 AIChat 的检索逻辑)
+  let r = fuse.search(q).slice(0, 12)
+  if (!r.length) {
+    const words = q.split(/\s+/).filter(w => w.length >= 2)
+    const agg = new Map()
+    for (const w of words) {
+      const wr = fuseWord.search(w).slice(0, 15)
+      for (const x of wr) {
+        const p = x.item.path
+        if (!agg.has(p)) agg.set(p, { hits: new Set(), totalScore: 0 })
+        const s = agg.get(p)
+        s.hits.add(w)
+        s.totalScore += x.score
+      }
+    }
+    const ranked = Array.from(agg.entries())
+      .map(([path, s]) => ({ path, hitCount: s.hits.size, avgScore: s.totalScore / s.hits.size }))
+      .sort((a, b) => (b.hitCount - a.hitCount) || (a.avgScore - b.avgScore))
+      .slice(0, 12)
+    r = ranked.map(x => {
+      const doc = allDocs.find(d => d.path === x.path)
+      return { score: x.avgScore, item: doc }
+    }).filter(x => x.item)
+  }
+  results.value = r.map(x => x.item)
   sel.value = 0
 }
 

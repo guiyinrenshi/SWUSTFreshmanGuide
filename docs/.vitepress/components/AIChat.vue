@@ -90,6 +90,7 @@ const error = ref('')
 const msgsEl = ref(null)
 
 let fuse = null
+let fuseWord = null
 let allDocs = []
 
 const examples = [
@@ -117,7 +118,14 @@ async function loadIndex() {
     fuse = new Fuse(allDocs, {
       keys: ['title', 'content'],
       includeScore: true,
-      threshold: 0.5,   // AI 助理用更宽松的阈值,宁可召回多一点
+      threshold: 0.6,   // 整句检索阈值
+      ignoreLocation: true,
+      minMatchCharLength: 1,
+    })
+    fuseWord = new Fuse(allDocs, {
+      keys: ['title', 'content'],
+      includeScore: true,
+      threshold: 0.8,   // 拆词检索阈值(2字词需要更宽松)
       ignoreLocation: true,
       minMatchCharLength: 1,
     })
@@ -126,13 +134,63 @@ async function loadIndex() {
   }
 }
 
+// Fuse.js 对中文标点敏感(? 等会破坏匹配),先清洗标点
+function cleanQuery(q) {
+  return (q || '')
+    .replace(/[？?！!。，,、；;：:（）()【】\[\]"'"'"'《》<>]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+// 拆词: 去掉纯语气虚词,保留关键信息词(名词/动词)
+function splitWords(q) {
+  const stopwords = ['怎么', '什么', '如何', '请问', '一个', '一下', '可以', '应该', '要吗', '吗', '呢', '的', '了', '在', '是', '我', '你', '他', '这个', '那个', '有']
+  const words = q.split(/\s+/).filter(w => w.length >= 2)
+  const filtered = words.filter(w => !['怎么', '什么', '如何', '请问', '可以', '应该', '多少', '需要', '有什'].includes(w))
+  return filtered.length ? filtered : words
+}
+
 function retrieve(question, k = 5) {
   if (!fuse) return []
-  return fuse.search(question.trim()).slice(0, k).map(r => ({
-    title: r.item.title || '',
-    path: r.item.path || '',
-    content: (r.item.content || '').slice(0, 800),
-  }))
+  const q = cleanQuery(question)
+  if (!q) return []
+
+  // 1) 整句检索
+  let results = fuse.search(q).slice(0, k)
+  if (results.length) {
+    return results.map(r => ({
+      title: r.item.title || '',
+      path: r.item.path || '',
+      content: (r.item.content || '').slice(0, 800),
+    }))
+  }
+
+  // 2) 拆词聚合: 对每个词单独检索,按命中词数+平均分排序
+  const words = splitWords(q)
+  const agg = new Map() // path -> {hits:Set, totalScore}
+  for (const w of words) {
+    const wr = fuseWord.search(w).slice(0, 15)
+    for (const x of wr) {
+      const p = x.item.path
+      if (!agg.has(p)) agg.set(p, { hits: new Set(), totalScore: 0 })
+      const s = agg.get(p)
+      s.hits.add(w)
+      s.totalScore += x.score
+    }
+  }
+  const ranked = Array.from(agg.entries())
+    .map(([path, s]) => ({ path, hitCount: s.hits.size, avgScore: s.totalScore / s.hits.size }))
+    .sort((a, b) => (b.hitCount - a.hitCount) || (a.avgScore - b.avgScore))
+    .slice(0, k)
+
+  return ranked.map(x => {
+    const doc = allDocs.find(d => d.path === x.path)
+    return {
+      title: doc?.title || '',
+      path: doc?.path || '',
+      content: (doc?.content || '').slice(0, 800),
+    }
+  })
 }
 
 async function open() {
