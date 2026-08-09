@@ -52,7 +52,7 @@ import AIChatNavButton from '../components/AIChatNavButton.vue'
 }
 
 /* Hero 入口在常见手机宽度下保持两列等宽。 */
-@media (min-width: 361px) and (max-width: 640px) {
+@media (min-width: 320px) and (max-width: 640px) {
   .VPHero .actions {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
