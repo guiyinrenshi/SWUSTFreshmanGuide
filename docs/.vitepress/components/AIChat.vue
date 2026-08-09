@@ -103,11 +103,21 @@ const examples = [
 function onKeydown(e) {
   if (e.key === 'Escape' && visible.value) close()
 }
+
+function onDocumentClick(e) {
+  const trigger = e.target.closest('a[href="#ai-assistant"]')
+  if (!trigger) return
+  e.preventDefault()
+  open()
+}
+
 onMounted(() => {
   document.addEventListener('keydown', onKeydown)
+  document.addEventListener('click', onDocumentClick)
 })
 onBeforeUnmount(() => {
   document.removeEventListener('keydown', onKeydown)
+  document.removeEventListener('click', onDocumentClick)
 })
 
 async function loadIndex() {

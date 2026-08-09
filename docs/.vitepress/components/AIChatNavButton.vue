@@ -8,7 +8,7 @@
       <path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/>
       <path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/>
     </svg>
-    <span>AI 助理</span>
+    <span class="ai-chat-nav-btn-label">AI 助理</span>
   </button>
 </template>
 
@@ -47,30 +47,14 @@ function openChat() {
     background: transparent;
     color: var(--vp-c-text-1);
     font-size: 14px;
-    padding: 8px 4px;
+    padding: 6px 4px;
   }
   .ai-chat-nav-btn:hover {
     background: var(--vp-c-bg-soft);
     color: var(--vp-c-text-1);
   }
-}
-</style>
-
-<!-- 全局样式(非 scoped): 修复 scoped 无法穿透到 VitePress 内部类的问题 -->
-<style>
-/* 桌面端: 让 AI 按钮排在 github(social-links)之前
-   VitePress content-after slot 默认在 social-links 之后,
-   用 flex order 调整: social-links 排后,本按钮排前 */
-@media (min-width: 961px) {
-  .VPNavBar .content-body {
-    flex-wrap: nowrap;
-  }
-  .VPNavBar .social-links {
-    order: 10;
-  }
-  .ai-chat-nav-btn {
-    order: 9;
-    margin-right: 8px;
+  .ai-chat-nav-btn-label {
+    display: none;
   }
 }
 </style>

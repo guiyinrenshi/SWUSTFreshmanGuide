@@ -12,6 +12,9 @@ hero:
     - theme: alt
       text: 西山校区生活指南
       link: /西山校区生活指南/住在西山
+    - theme: brand
+      text: 🤖 AI 助理
+      link: '#ai-assistant'
     - theme: alt
       text: GitHub 仓库
       link: https://github.com/guiyinrenshi/SWUSTFreshmanGuide
@@ -42,7 +45,7 @@ features:
 
 说起来今年已经是我维护这个指南的第五个年头了,五年前当我以新生的身份写这个指南的时候我的本意就是想让新生更方便查到自己需要的信息,当我今年以校友的身份再一次开始更新时,我的初心依旧是让新生少走弯路。随着 AI 的不断发展,AI 已经渗透到了日常生活的方方面面,新生指南也要与时俱进,与时代共同成长,今年,我创新性使用 AI Agent 来协助我维护这个项目,用 AI 生成的网页替代了原先的网页,希望能给新生提供更便利的使用环境,同时我也将依靠 AI 来更新指南的形式与内容,为新生带来更好的体验。
 
-<div class="ai-home-card">
+<div id="ai-assistant" class="ai-home-card">
   <div class="ai-home-card-text">
     <strong>🤖 有问题?问问 AI 助理</strong>
     <span>基于站内文章智能回答,医保 / 寝室 / 转专业 / 报到流程都能问。</span>
