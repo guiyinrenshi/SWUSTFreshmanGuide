@@ -26,3 +26,27 @@ lerna-debug.log*
 
 # Build outputs that might leak in
 *.local
+
+# 敏感信息防护: 含真实配置/密钥/域名/服务器路径的文件绝不入库
+# 部署脚本真实版只在服务器本地,仓库内只放占位符版本
+.env
+.env.*
+!.env.example
+*.env
+!*.example
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa
+id_ed25519
+secrets/
+credentials/
+*.secret
+
+# 服务器真实配置文件(如有拷贝到本地仓库,禁止提交)
+nginx/*.conf
+*gyrs*.conf
+*rcgl*.conf
+/webhook.py
+swust-ai-proxy.service
