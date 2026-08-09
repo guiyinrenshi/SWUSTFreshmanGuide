@@ -94,12 +94,30 @@ providers:
     ...
 ```
 
-切换完成后：
+**多 provider fallback（v0.1.1+）**：不需要手动改 active。`fallback_order` 定义主 provider 失败时的备用链：
+
+```yaml
+fallback_order:
+  - "deepseek"
+```
+
+主 provider（minimax）因限流 / 额度不足 / 超时失败时，自动按 `fallback_order` 顺序尝试备用 provider。`/api/chat` 响应里的 `provider` 字段会告诉你实际用了谁。
 
 ```bash
-ssh root@<server-ip> 'systemctl restart swust-ai-proxy.service'
-curl https://<site-domain>/api/health  # 确认 provider / model 已更新
+curl https://<site-domain>/api/health
+# {"ok":true,"provider":"minimax","model":"MiniMax-M2.7","fallback_chain":["minimax","deepseek"],...}
 ```
+
+### 环境变量（key 不入 git）
+
+`/etc/swust-webhook/ai-proxy.env`（权限 600）：
+
+```bash
+MINIMAX_API_KEY=sk-<redacted>-...     # minimax 国内站
+DEEPSEEK_API_KEY=sk-...       # deepseek 备用
+```
+
+改完重启：`systemctl restart swust-ai-proxy.service`
 
 ### Nginx 反代
 
