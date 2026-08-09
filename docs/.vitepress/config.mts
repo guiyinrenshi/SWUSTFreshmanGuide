@@ -17,6 +17,16 @@ export default defineConfig({
   // 自定义 Fuse.js 搜索: build 时生成 search-index.json
   vite: {
     plugins: [buildSearchIndex()],
+    // dev / preview 服务器代理 /api/chat 到生产后端(127.0.0.1:18800)
+    // 生产环境由 nginx 反代,这里仅用于本地 preview 联调
+    server: {
+      proxy: {
+        '/api': {
+          target: 'http://127.0.0.1:18800',
+          changeOrigin: false,
+        },
+      },
+    },
   },
 
   // GitHub Pages 部署配置
