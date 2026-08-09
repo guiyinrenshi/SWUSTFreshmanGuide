@@ -127,6 +127,7 @@ export default defineConfig({
           text: '西山校区生活',
           collapsed: false,
           items: [
+            { text: '前言', link: '/西山校区生活指南/前言' },
             { text: '住在西山', link: '/西山校区生活指南/住在西山' },
             { text: '食在西山', link: '/西山校区生活指南/食在西山' },
             { text: '行在西山', link: '/西山校区生活指南/行在西山' },

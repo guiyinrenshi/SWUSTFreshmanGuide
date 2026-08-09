@@ -8,11 +8,11 @@ REPO_DIR=/opt/swust-webhook/repo
 SITE_DIR=/www/wwwroot/<site-domain>
 LOG_PREFIX="[deploy]"
 GITHUB_REPO="guiyinrenshi/SWUSTFreshmanGuide"
-# 广州服务器实测可用性（多次完整 fetch 平均延迟）
+# 广州服务器实测可用性(多次完整 fetch 平均延迟)
 # 1) gh-proxy.com: 0.7s(最快)
 # 2) github.com:   1s (原生,故障时易 90s 超时)
 # 3) ghfast.top:   2.7s (社区长期维护,稳)
-# 优先级: 原生 → gh-proxy → ghfast.top, 任一成功即停
+# 优先级: 原生 → gh-proxy → ghfast.top,任一成功即停
 GITHUB_MIRRORS=(
     "https://github.com"
     "https://gh-proxy.com"
@@ -23,11 +23,11 @@ log() { echo "$LOG_PREFIX $(date '+%Y-%m-%d %H:%M:%S') $*"; }
 
 cd "$REPO_DIR"
 
-# 1. 拉取最新 main（多镜像 fallback）
+# 1. 拉取最新 main(多镜像 fallback)
 #    原生 github.com 在国内偶发 90s 超时,3 次重试 = 270s 失败。
 #    改为"原生→gh-proxy→ghfast.top"3 段 fallback,每段超时 30s。
-#    任意一段成功后,把对应 URL 固化为 origin,后续直接走它
-#    (持久化绕过 DNS / 网络抖动)。
+#    任意一段成功后,把对应 URL 固化为 origin(更新 origin/main 跟踪分支),
+#    后续直接走它(持久化绕过 DNS / 网络抖动)。
 log "git fetch with mirror fallback (orig=github.com, mirrors=${GITHUB_MIRRORS[*]})"
 FETCH_OK=0
 for mirror_base in "${GITHUB_MIRRORS[@]}"; do
@@ -37,13 +37,13 @@ for mirror_base in "${GITHUB_MIRRORS[@]}"; do
         remote_url="${mirror_base}/https://github.com/${GITHUB_REPO}.git"
     fi
     log "try fetch from: $remote_url"
-    # 注意: fetch 失败要继续尝试下一个镜像,不能因 set -e 提前退出
-    if timeout 30 git fetch "$remote_url" main --prune 2>&1; then
+    # 步骤 A: 把 origin 指向当前候选镜像(保证 origin/main 跟踪分支存在)
+    git remote remove origin 2>/dev/null || true
+    git remote add origin "$remote_url"
+    # 步骤 B: 通过 origin fetch(注意:即使失败也不因 set -e 退出,继续尝试下一个镜像)
+    if timeout 30 git fetch origin main --prune 2>&1; then
         FETCH_OK=1
-        # 成功:把镜像固化为 origin,后续直接走它
-        git remote remove origin 2>/dev/null || true
-        git remote add origin "$remote_url"
-        log "fetch OK, set origin=$remote_url"
+        log "fetch OK, origin=$remote_url"
         break
     else
         log "fetch failed from $remote_url (will try next mirror)"
