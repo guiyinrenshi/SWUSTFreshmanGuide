@@ -43,6 +43,15 @@ import AIChatNavButton from '../components/AIChatNavButton.vue'
     height: 32px !important;
     border-radius: 8px !important;
   }
+  .VPNavBarAppearance {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    padding-inline: 12px 28px !important;
+  }
+  .VPNavBarAppearance button {
+    margin-inline: auto !important;
+  }
 }
 @media (max-width: 960px) {
   .VPNavBar .content-body {
