@@ -186,6 +186,81 @@ def build_prompt(req: ChatRequest) -> tuple[str, list[dict]]:
     return cfg_sys, messages
 
 
+# ----------------------------------------------------------------------------
+# 敏感信息拦截
+# ----------------------------------------------------------------------------
+
+import re as _re
+
+# 密钥格式: sk- 后跟 8-64 位字母数字(可含 _ 和 -)
+_SENSITIVE_KEY_RE = _re.compile(r"\bsk-[A-Za-z0-9_-]{8,64}\b")
+# 其他常见密钥前缀(Bearer token 等)
+_SENSITIVE_PREFIXES = (
+    "sk-", "sk_", "Bearer ", "api_key=", "apikey=", "token=",
+    "AKIA", "ghp_", "gho_", "xoxb-", "xoxp-",
+)
+# 截断后追加的提示
+_TRUNCATE_NOTE = "\n\n> ⚠️ 输出已截断(检测到疑似敏感信息,已自动拦截)。"
+
+
+def _collect_real_secrets() -> list[str]:
+    """收集配置中的真实 key,用于精确匹配(比正则更可靠)。"""
+    secrets = set()
+    for p in cfg.get("providers", []):
+        k = p.get("api_key", "")
+        if k and not k.startswith("REPLACE_WITH"):
+            secrets.add(k)
+            # 同时收集 base_url 中可能带 key 的形态
+            if len(k) > 8:
+                secrets.add(k[:16])  # key 前缀 16 位
+    return list(secrets)
+
+
+def sanitize_answer(answer: str) -> str:
+    """拦截 LLM 输出中的敏感信息:一旦出现疑似密钥,立即截断。
+
+    规则:
+    1. 正则匹配 sk-xxx 格式的密钥 → 截断
+    2. 精确匹配配置中的真实 key(或其前缀)→ 截断
+    3. 匹配其他常见密钥前缀(Bearer/ghp_/AKIA 等)→ 截断
+    """
+    if not answer:
+        return answer
+
+    # 1) 正则: sk- 密钥
+    m = _SENSITIVE_KEY_RE.search(answer)
+    if m:
+        log.warning("sanitize: sk- 密钥模式命中,截断输出")
+        return answer[: m.start()].rstrip() + _TRUNCATE_NOTE
+
+    # 2) 精确匹配真实 key
+    for secret in _collect_real_secrets():
+        idx = answer.find(secret)
+        if idx >= 0:
+            log.warning("sanitize: 真实 key 命中,截断输出")
+            return answer[:idx].rstrip() + _TRUNCATE_NOTE
+
+    # 3) 其他常见密钥前缀(要求后面有足够长的连续 token 字符)
+    for prefix in _SENSITIVE_PREFIXES:
+        idx = answer.find(prefix)
+        if idx >= 0:
+            # 检查前缀后面是否紧跟长 token(>=8 位字母数字)
+            tail = answer[idx + len(prefix):]
+            token_len = 0
+            for ch in tail:
+                if ch.isalnum() or ch in "_-":
+                    token_len += 1
+                    if token_len >= 8:
+                        break
+                else:
+                    break
+            if token_len >= 8:
+                log.warning(f"sanitize: 前缀 '{prefix}' 命中,截断输出")
+                return answer[:idx].rstrip() + _TRUNCATE_NOTE
+
+    return answer
+
+
 async def chat_with_fallback(system: str, messages: list[dict]) -> tuple[str, str]:
     """按 fallback_chain 顺序尝试 provider,返回 (answer, provider_name)。"""
     last_err: Exception | None = None
@@ -197,6 +272,8 @@ async def chat_with_fallback(system: str, messages: list[dict]) -> tuple[str, st
         log.info(f"trying provider: {pname} model={p['model']}")
         try:
             answer = await call_llm_chat(p, system, messages)
+            # 敏感信息拦截: 一旦输出出现密钥,截断
+            answer = sanitize_answer(answer)
             return answer, pname
         except Exception as e:
             last_err = e
