@@ -199,6 +199,11 @@ async function open() {
   setTimeout(() => document.querySelector('.ai-chat-input')?.focus(), 50)
 }
 
+// 暴露全局入口,供导航按钮/首页按钮触发
+if (typeof window !== 'undefined') {
+  window.__openAIChat = open
+}
+
 function close() {
   visible.value = false
 }
