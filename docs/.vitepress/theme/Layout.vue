@@ -23,6 +23,7 @@ import AIChatNavButton from '../components/AIChatNavButton.vue'
 </script>
 
 <style>
+/* ========== 导航栏: AI 按钮排在 github 前 ========== */
 @media (min-width: 961px) {
   .VPNavBar .content-body {
     flex-wrap: nowrap !important;
@@ -39,6 +40,26 @@ import AIChatNavButton from '../components/AIChatNavButton.vue'
   .VPNavBar .content-body {
     overflow: hidden !important;
     min-width: 0 !important;
+  }
+}
+
+/* ========== Hero 按钮: 移动端全宽竖排 ========== */
+@media (max-width: 640px) {
+  .VPHero .actions {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    width: 100% !important;
+  }
+  .VPHero .actions .VPButton {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+}
+
+/* ========== Feature 卡片: 移动端单列, 消除右侧留白 ========== */
+@media (max-width: 640px) {
+  .VPFeatures .VPFeature {
+    max-width: 100% !important;
   }
 }
 </style>
