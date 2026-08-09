@@ -117,7 +117,7 @@ async function loadIndex() {
     fuse = new Fuse(allDocs, {
       keys: ['title', 'content'],
       includeScore: true,
-      threshold: 0.4,
+      threshold: 0.5,   // AI 助理用更宽松的阈值,宁可召回多一点
       ignoreLocation: true,
       minMatchCharLength: 1,
     })

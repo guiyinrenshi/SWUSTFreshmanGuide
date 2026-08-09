@@ -39,7 +39,7 @@ export function buildSearchIndex() {
                   .trim()
                 pages.push({
                   title,
-                  content: clean.slice(0, 500),
+                  content: clean.slice(0, 1500),
                   path: '/' + rel.replace(/\.md$/, '').replace(/\\/g, '/'),
                 })
               } catch (e) {
