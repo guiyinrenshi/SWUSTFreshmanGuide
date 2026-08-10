@@ -267,7 +267,10 @@ function scrollToBottom() {
 
 function renderMarkdown(text) {
   // 极简渲染:处理 [[N]] 引用 + 段落换行 + 链接
-  return (text || '')
+  let s = (text || '')
+  // 1. 剥离模型自带的思维链块(M2.7 等会输出 <think>...</think>),不要让用户看到
+  s = s.replace(/<think>[\s\S]*?<\/think>/gi, '').trim()
+  return s
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     .replace(/\[\[(\d+)\]\]/g, '<sup class="ai-cite">[$1]</sup>')
     .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>')
