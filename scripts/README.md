@@ -45,11 +45,11 @@
 
 ```
 浏览器  →  <site-domain>/api/chat  →  nginx 反代  →  127.0.0.1:18800 (FastAPI)
-                                              →  minimax OpenAI Chat Completions API
+                                              →  LLM provider API (qwen/minimax/deepseek)
 ```
 
 - 前端用 Fuse.js 在 `search-index.json` 里检索 top-K 文章，连同问题 POST 给 `/api/chat`
-- 后端把"问题 + top-K 文章全文"拼成 prompt，调用 LLM（MiniMax-M2.7）流式回答
+- 后端把"问题 + top-K 文章全文"拼成 prompt，调用 LLM（Qwen3.8-Flash）流式回答
 - LLM 严格遵循 system_prompt：只能基于站内文章回答，必须用 [[N]] 标注引用
 
 ### 文件
@@ -86,7 +86,7 @@ systemctl restart swust-ai-proxy.service'
 
 ```yaml
 providers:
-  - name: "minimax"        # 当前默认
+  - name: "qwen"           # 当前默认
     active: true            # 只允许一个 active: true
     ...
   - name: "deepseek"        # 备用
@@ -101,7 +101,7 @@ fallback_order:
   - "deepseek"
 ```
 
-主 provider（minimax）因限流 / 额度不足 / 超时失败时，自动按 `fallback_order` 顺序尝试备用 provider。`/api/chat` 响应里的 `provider` 字段会告诉你实际用了谁。
+主 provider（qwen）因限流 / 额度不足 / 超时失败时，自动按 `fallback_order` 顺序尝试备用 provider。`/api/chat` 响应里的 `provider` 字段会告诉你实际用了谁。
 
 ```bash
 curl https://<site-domain>/api/health

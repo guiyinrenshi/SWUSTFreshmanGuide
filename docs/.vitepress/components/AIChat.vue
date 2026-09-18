@@ -25,7 +25,7 @@
           <header class="ai-chat-header">
             <div>
               <strong>西南科大新生指南 · AI 助理</strong>
-              <div class="ai-chat-sub">基于站内 39 篇文章 · 由 MiniMax-M2.7 驱动</div>
+              <div class="ai-chat-sub">基于站内 39 篇文章 · 由 Qwen3.8-Flash 驱动</div>
             </div>
             <button class="ai-chat-close" @click="close" aria-label="关闭">ESC</button>
           </header>
