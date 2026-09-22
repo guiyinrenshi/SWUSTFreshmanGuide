@@ -27,29 +27,6 @@ providers:
     max_tokens: 800
     timeout: 60
 
-  # === minimax 国内站(备用 fallback 1)===
-  - name: "minimax"
-    active: false
-    api: "openai"             # openai = OpenAI 兼容 chat completions
-    base_url: "https://api.minimaxi.com/v1"
-    api_key: "REPLACE_WITH_YOUR_MINIMAX_KEY"   # 用环境变量 MINIMAX_API_KEY 覆盖
-    model: "MiniMax-M2.7"
-    temperature: 0.3
-    max_tokens: 800
-    timeout: 60
-
-  # === deepseek(备用 fallback)===
-  # hermes 主配置也在用: base_url=https://api.deepseek.com, model=deepseek-v4-flash
-  - name: "deepseek"
-    active: false
-    api: "openai"
-    base_url: "https://api.deepseek.com/v1"
-    api_key: "REPLACE_WITH_YOUR_DEEPSEEK_KEY"  # 用环境变量 DEEPSEEK_API_KEY 覆盖
-    model: "deepseek-v4-flash"
-    temperature: 0.3
-    max_tokens: 800
-    timeout: 60
-
   # === 其他备用(可自行添加)===
   # - name: "openai"
   #   active: false
@@ -63,9 +40,7 @@ providers:
 
 # fallback 顺序: 主 provider(minimax)失败时依次尝试这里列出的备用 provider
 # 空列表 = 不 fallback
-fallback_order:
-  - "minimax"
-  - "deepseek"
+fallback_order: []
 
 # 系统 prompt: 强制基于站内文章回答 + 引用来源 + 禁止挪为他用
 system_prompt: |
